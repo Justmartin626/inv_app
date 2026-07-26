@@ -47,6 +47,21 @@ void main() {
     expect(store.items.single.quantity, 4);
   });
 
+  testWidgets('low stock banner names the category each item belongs to',
+      (tester) async {
+    final category = await store.addCategory('Pantry');
+    await store.addItem(
+        categoryId: category.id,
+        name: 'Salt',
+        quantity: 1,
+        unit: 'boxes',
+        lowStockThreshold: 2);
+    await tester.pumpWidget(HomeInventoryApp(store: store));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Salt: 1 boxes — in Pantry'), findsOneWidget);
+  });
+
   test('deleting a category removes its items', () async {
     final category = await store.addCategory('Kitchen');
     await store.addItem(categoryId: category.id, name: 'Rice', quantity: 2);

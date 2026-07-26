@@ -80,6 +80,7 @@ class _LowStockBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final store = InventoryScope.of(context);
     return Card(
       margin: const EdgeInsets.all(12),
       color: scheme.errorContainer,
@@ -98,12 +99,16 @@ class _LowStockBanner extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 8),
-            Text(
-              items
-                  .map((i) => '${i.name}: ${formatQuantity(i.quantity)} ${i.unit}'.trim())
-                  .join(', '),
-              style: TextStyle(color: scheme.onErrorContainer),
-            ),
+            for (final item in items)
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(
+                  '${item.name}: '
+                  '${'${formatQuantity(item.quantity)} ${item.unit}'.trim()}'
+                  ' — in ${store.categoryById(item.categoryId)?.name ?? 'Uncategorized'}',
+                  style: TextStyle(color: scheme.onErrorContainer),
+                ),
+              ),
           ],
         ),
       ),
